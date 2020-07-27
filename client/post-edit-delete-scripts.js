@@ -7,14 +7,8 @@ function postJournal() {
     let entry = document.getElementById('entry').value
     const accessToken = localStorage.getItem('SessionToken')
     let newEntry = { journal: { title: title, date: date, entry: entry } } 
-    }
-    
-    
-    /* *************************
-     *** UPDATE JOURNAL ***
-    ************************** */
-    function editJournal(postId) {
-        fetch('http://localhost:3000/journal/create', {
+
+    fetch('http://localhost:3000/journal/create', {
             method: 'POST',
             headers = new Headers({
                 'Content-Type': 'application/json',
@@ -29,6 +23,14 @@ function postJournal() {
         .catch((err) => {
             console.log(err)
         })
+    }
+    
+    
+    /* *************************
+     *** UPDATE JOURNAL ***
+    ************************** */
+    function editJournal(postId) {
+        
     }
     
     
