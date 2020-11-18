@@ -1,15 +1,9 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('journal-walkthrough', 'postgres', 'weewoo123', {
+require('dotenv').config();
+const Sequelize = require("sequelize");
+
+const db = new Sequelize('journal-walkthrough', 'postgres', 'weewoo123', {
     host: 'localhost',
     dialect: 'postgres'
 });
 
-sequelize.authenticate().then(
-    function() {
-        console.log('Connected to journal-walkthrough postgres database');
-    },
-    function(err){
-        console.log(err);
-    }
-);
-module.exports = sequelize;
+module.exports = db;

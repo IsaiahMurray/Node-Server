@@ -1,53 +1,72 @@
-const router = require('express').Router();
-const User = require('../db').import('../models/user');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+require('dotenv').config();
+const log = console.log;
+const chalk = require("chalk");
+const router = require("express").Router();
+const { User } = require('../models');
 
-router.post('/create', function(req, res) {
-    User.create({
-      email: req.body.user.email,
-      password: bcrypt.hashSync(req.body.user.password, 13)
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+
+router.post("/create", function (req, res) {
+  /**********************************
+   ********   USER CREATE   *********
+   *********************************/
+  User.create({
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 13),
+  })
+    .then(function createSuccess(user) {
+      let token = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: 60 * 60 * 24 }
+      );
+
+      res.json({
+        user: user,
+        message: "User successfully created!",
+        sessionToken: token,
+      });
     })
-    .then(
-      function createSuccess(user) {
-        let token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
+    .catch((err) => log(chalk.redBright(err)));
+  //--------------------------------------
+});
+/**********************************
+ ********   USER LOGIN   *********
+ *********************************/
 
-        res.json({
-          user: user,
-          message: 'User successfully created!',
-          sessionToken: token
-        });
-      }
-    )
-    .catch(err => res.status(500).json({ error : err}))
-  });
-
-  router.post('/login', function(req, res){
-    User.findOne({
-      where: {
-        email: req.body.user.email
-      }
-     })
-    .then(function loginSuccess(user){
-      if(user){
-        bcrypt.compare(req.body.user.password, user.password, function(err, matches){
-          if(matches){
-            let token = jwt.sign({ id: user.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24})
+router.post("/login", function (req, res) {
+  User.findOne({
+    where: {
+      email: req.body.email,
+    },
+  })
+    .then(function loginSuccess(user) {
+      if (user) {
+        bcrypt.compare(req.body.password, user.password, function (
+          err,
+          matches
+        ) {
+          if (matches) {
+            let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+              expiresIn: 60 * 60 * 24,
+            });
 
             res.status(200).json({
-            user: user,
-            message: "User successfully logged in!",
-            sessionToken: token
-          })
-        } else {
-          res.status(502).send({error: "Login Failed"});
-        }
-      });
-    }else{
-      res.status(500).json({ error: "User does not exist."})
-    }
-  })
-  .catch(err => res.status(500).json({ error: err}))
+              user: user,
+              message: "User has been logged in!",
+              sessionToken: token,
+            });
+          } else {
+            res.status(502).send({ error: "Login failed!! Who are you?!" });
+          }
+        });
+      } else {
+        res.status(500).json({ error: "User does not exist." });
+      }
+    })
+    .catch((err) => res.status(500).json({ error: err }));
 });
 
 module.exports = router;
