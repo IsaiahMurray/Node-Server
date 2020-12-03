@@ -10,23 +10,30 @@ import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
   input: {
-    width: "15vw",
+    width: "90%",
   },
   card: {
-    width: "20vw",
+    minWidth: '15rem',
+    maxWidth: "30vw",
     minHeight: "40vh",
     padding: "2%",
-    margin: "auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   modal: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
+  container: {
+    minWidth: "50%",
+    padding: "2%",
+  },
 }));
 
 const newDate = new Date();
-let defaultDate = newDate.toISOString().slice(0, 10)
+let defaultDate = newDate.toISOString().slice(0, 10);
 
 const JournalCreate = (props) => {
   const classes = useStyles();
@@ -60,19 +67,19 @@ const JournalCreate = (props) => {
     })
       .then((res) => {
         console.log(res);
-        if(res.status === 200){
+        if (res.status === 200) {
           handleClose();
-        setTitle('');
-        setDate('');
-        setEntry('');
+          setTitle("");
+          setDate("");
+          setEntry("");
           alert("Journal entry has been created!");
-        }  else {
-        alert("Sorry. Something went wrong..");
+          props.fetchJournals("http://localhost:3000/journal/mine");
+        } else {
+          alert("Sorry. Something went wrong..");
         }
       })
       .catch((err) => {
         console.log(err);
-        
       });
   };
 
@@ -100,11 +107,12 @@ const JournalCreate = (props) => {
       >
         <Fade in={open}>
           <Card className={classes.card}>
-            <Container fixed>
+            <Container className={classes.container}>
               <TextField
                 id="journal-title"
                 label="Title"
                 multiline
+                autoFocus
                 variant="outlined"
                 className={classes.input}
                 placeholder="Title"
@@ -137,11 +145,7 @@ const JournalCreate = (props) => {
               />
               <br />
               <br />
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleSubmit}
-              >
+              <Button variant="outlined" color="primary" onClick={handleSubmit}>
                 Submit Entry
               </Button>
             </Container>

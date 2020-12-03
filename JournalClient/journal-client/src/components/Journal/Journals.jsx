@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    width: 800,
+    maxWidth: 800,
     height: "80vh",
   },
   icon: {
@@ -22,30 +22,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Journals = (props) => {
-  const [journals, setJournals] = useState([]);
+  const [journals, setJournals] = useState([]); //setJournals is being used in the fetchJournals function from Display.jsx via passed
   const classes = useStyles();
   const [fetchUrl, setFetchUrl] = useState(
     "http://localhost:3000/journal/mine"
   );
 
-  const fetchJournals = () => {
-    fetch(fetchUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: props.token,
-      },
-    })
-      .then((res) => res.json())
-      .then((journalArray) => {
-        setJournals(journalArray);
-        console.log(journalArray);
-      })
-      .catch((err) => console.log(err));
-  };
+
+  console.log(props)
+
+  props.fetchJournals(fetchUrl);
 
   useEffect(() => {
-    fetchJournals();
+    props.fetchJournals(fetchUrl);
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,10 +52,10 @@ const Journals = (props) => {
 
   return (
     <div className={classes.root}>
+      {buttonView}
       <GridList cellHeight={250} className={classes.gridList}>
-        {buttonView}
         {journals.map((journal) => (
-          <Journal fetchJournals={fetchJournals} journal={journal} />
+          <Journal journal={journal} />
         ))}
       </GridList>
     </div>

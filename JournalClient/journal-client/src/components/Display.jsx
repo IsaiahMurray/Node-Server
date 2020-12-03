@@ -8,14 +8,31 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+
+
 const Display = (props) => {
 const classes = useStyles();
 
+const fetchJournals = (fetchUrl, setJournals) => {
+  fetch(fetchUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: props.token,
+    },
+  })
+    .then((res) => res.json())
+    .then((journalArray) => {
+      setJournals(journalArray); //Will be used to change state in Journals.jsx
+      console.log(journalArray);
+    })
+    .catch((err) => console.log(err));
+}
   return (
     <div className={classes.spacing}>
       <h1>Display</h1>
-      <JournalCreate token={props.token}/>
-      <Journals token={props.token}/>
+      <JournalCreate fetchJournals={fetchJournals} token={props.token}/>
+      <Journals fetchJournals={fetchJournals} token={props.token}/>
       
     </div>
   );

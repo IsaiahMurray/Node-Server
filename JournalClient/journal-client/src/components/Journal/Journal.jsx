@@ -19,8 +19,9 @@ import images from "../Images";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
-    height: "30vh",
-    width: "20vw",
+     height: "45%",
+     maxWidth: "50%",
+     minWidth: "33%",
   },
   modal: {
     display: "flex",
