@@ -73,7 +73,6 @@ const JournalCreate = (props) => {
           setDate("");
           setEntry("");
           alert("Journal entry has been created!");
-          props.fetchJournals("http://localhost:3000/journal/mine");
         } else {
           alert("Sorry. Something went wrong..");
         }
