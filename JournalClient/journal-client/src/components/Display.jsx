@@ -16,7 +16,6 @@ const classes = useStyles();
   return (
     <div className={classes.spacing}>
       <h1>Display</h1>
-      <JournalCreate token={props.token}/>
       <Journals token={props.token}/>
       
     </div>

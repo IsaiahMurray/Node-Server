@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import Button from "@material-ui/core/Button";
-import Journal from './Journal';
+import Journal from "./Journal";
+import JournalCreate from "./JournalCreate";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,8 +25,10 @@ const useStyles = makeStyles((theme) => ({
 const Journals = (props) => {
   const [journals, setJournals] = useState([]);
   const classes = useStyles();
-  const [fetchUrl, setFetchUrl] = useState("http://localhost:3000/journal/mine");
-  
+  const [fetchUrl, setFetchUrl] = useState(
+    "http://localhost:3000/journal/mine"
+  );
+
   useEffect(() => {
     fetch(fetchUrl, {
       method: "GET",
@@ -36,8 +39,8 @@ const Journals = (props) => {
     })
       .then((res) => res.json())
       .then((journalArray) => {
-        setJournals(journalArray)
-        console.log(journalArray)
+        setJournals(journalArray);
+        console.log(journalArray);
       })
       .catch((err) => console.log(err));
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,20 +48,29 @@ const Journals = (props) => {
 
   let buttonView;
 
-  if(fetchUrl === 'http://localhost:3000/journal/mine'){
-     buttonView = ''
+  if (fetchUrl === "http://localhost:3000/journal/mine") {
+    buttonView = "";
   } else {
-    buttonView = <Button onClick={setFetchUrl('http://localhost:3000/journal/mine')}>All Journals</Button>
+    buttonView = (
+      <Button onClick={setFetchUrl("http://localhost:3000/journal/mine")}>
+        All Journals
+      </Button>
+    );
   }
 
   return (
     <div className={classes.root}>
-      <GridList cellHeight={250} className={classes.gridList}>
-        {buttonView}
-        {journals.map((journal) => (
-          <Journal journal={journal} />
-        ))}
-      </GridList>
+      <div>
+        <JournalCreate token={props.token} />
+      </div>
+      <div>
+        <GridList cellHeight={250} className={classes.gridList}>
+          {buttonView}
+          {journals.map((journal) => (
+            <Journal journal={journal} />
+          ))}
+        </GridList>
+      </div>
     </div>
   );
 };
